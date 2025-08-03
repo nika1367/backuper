@@ -811,8 +811,11 @@ generate_password() {
 
     # اگر مقدار LIMITSIZE هنوز تنظیم نشده، مقدار پیش‌فرض قرار بده
     if [[ -z "$LIMITSIZE" || ! "$LIMITSIZE" =~ ^[0-9]+$ ]]; then
-        LIMITSIZE=24
-    fi
+    echo "[DEBUG] LIMITSIZE was invalid or empty, defaulting to 24"
+    LIMITSIZE=24
+else
+    echo "[DEBUG] LIMITSIZE is valid: $LIMITSIZE"
+fi
 
     while true; do
         input "Enter the password for the archive (or press Enter to skip): " PASSWORD
