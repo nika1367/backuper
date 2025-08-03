@@ -805,35 +805,34 @@ hiddify_template() {
 
 generate_password() {
     clear
-    print "[PASSWORD PROTECTION]
-"
-    print "You can set a password for the archive. The password must contain both letters and numbers, and be at least 8 characters long.
-"
-    print "If you don't want a password, just press Enter.
-"
+    print "[PASSWORD PROTECTION]\n"
+    print "You can set a password for the archive. The password must contain both letters and numbers, and be at least 8 characters long.\n"
+    print "If you don't want a password, just press Enter.\n"
 
     # اگر مقدار LIMITSIZE هنوز تنظیم نشده، مقدار پیش‌فرض قرار بده
-    if [[ -z \"$LIMITSIZE\" || ! \"$LIMITSIZE\" =~ ^[0-9]+$ ]]; then
+    if [[ -z "$LIMITSIZE" || ! "$LIMITSIZE" =~ ^[0-9]+$ ]]; then
         LIMITSIZE=24
     fi
 
     while true; do
         input "Enter the password for the archive (or press Enter to skip): " PASSWORD
 
-        if [ -z \"$PASSWORD\" ]; then
+        if [ -z "$PASSWORD" ]; then
             success "No password will be set for the archive."
             COMPRESS="zip -9 -r -s ${LIMITSIZE}m"
             break
         fi
 
-        if [[ ! \"$PASSWORD\" =~ ^[a-zA-Z0-9]{8,}$ ]]; then
-            wrong "Password must be at least 8 characters long and contain only letters and numbers. Please try again."
+        # استفاده از grep برای بررسی رمز عبور با کاراکترهای خاص
+        echo "$PASSWORD" | grep -P '^[a-zA-Z0-9_@#\!\$\%\^&\*\(\)]{8,}$' > /dev/null
+        if [ $? -ne 0 ]; then
+            wrong "Password must be at least 8 characters long and contain only letters, numbers, and allowed special characters: _@#!\$%\^&* Please try again."
             continue
         fi
 
         input "Confirm the password: " CONFIRM_PASSWORD
 
-        if [ \"$PASSWORD\" == \"$CONFIRM_PASSWORD\" ]; then
+        if [ "$PASSWORD" == "$CONFIRM_PASSWORD" ]; then
             success "Password confirmed."
             COMPRESS="zip -9 -r -e -P $PASSWORD -s ${LIMITSIZE}m"
             break
