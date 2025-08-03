@@ -133,9 +133,9 @@ generate_password() {
             break
         fi
 
-        # اصلاح شده: بررسی رمز عبور با اجازه دادن به کاراکترهای خاص
-        if [[ ! "$PASSWORD" =~ ^[a-zA-Z0-9_@#!\$%^&*]{8,}$ ]]; then
-            wrong "Password must be at least 8 characters long and contain only letters, numbers, and allowed special characters: _@#!$%^&* Please try again."
+        # اصلاح شده: بررسی رمز عبور با اجازه دادن به کاراکترهای خاص و فرار دادن کاراکترها
+        if [[ ! "$PASSWORD" =~ ^[a-zA-Z0-9_@#!\$%\^&\*\(\)]{8,}$ ]]; then
+            wrong "Password must be at least 8 characters long and contain only letters, numbers, and allowed special characters: _@#!\$%\^&* Please try again."
             continue
         fi
 
